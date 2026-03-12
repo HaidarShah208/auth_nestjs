@@ -9,6 +9,8 @@ export class AuthService {
         console.log('check dto',userRegisterDTO)
         const saltRound=10
         const hash= await bcrypt.hash(userRegisterDTO.password,saltRound)
-        return this.userService.createUser({...userRegisterDTO, password:hash})
+        const user= await this.userService.createUser({...userRegisterDTO, password:hash})
+        console.log('user',user)
+        return {}
      }
 }
