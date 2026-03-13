@@ -27,4 +27,10 @@ export class UserService {
           throw error;
         }
       }
+
+    async getUserById(id:string){
+      const user= await this.UserModal.findById({_id:id})
+      console.log(user)
+      return user
+    }
 }
