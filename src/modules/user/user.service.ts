@@ -8,7 +8,10 @@ import { userRegisterDto } from '../auth/dto/userRegister.dto';
 export class UserService {
     constructor(@InjectModel(User.name) private UserModal: Model<User>) {}
 
-    
+    async findByEmail(email: string) {
+        return this.UserModal.findOne({ email }).exec();
+    }
+
     async createUser(userRegisterDTO: userRegisterDto) {
         try {
           return await this.UserModal.create({
