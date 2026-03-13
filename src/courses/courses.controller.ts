@@ -1,13 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
+import { AuthGuard } from 'src/modules/auth/guards/jwt.auth.guard';
+import { Roles } from 'src/modules/auth/decorators/roles.decorators';
+import { Role } from 'src/enums/role.enum';
 
 @Controller('courses')
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
   @Post()
+  @UseGuards(AuthGuard)
+  @Roles(Role.Admin)
   create(@Body() createCourseDto: CreateCourseDto) {
     return this.coursesService.create(createCourseDto);
   }

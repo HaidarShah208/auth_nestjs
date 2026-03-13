@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { Model } from 'mongoose';
@@ -9,13 +9,20 @@ import { InjectModel } from '@nestjs/mongoose';
 export class CoursesService {
   constructor(@InjectModel(Course.name) private CourseModal: Model<Course>) {}
   async create(createCourseDto: CreateCourseDto) {
-    await this.CourseModal.create({
-      name:createCourseDto.name,
-      level:createCourseDto.level,
-      price:createCourseDto.price,
-      description:createCourseDto.description,
-    })
-    return 'This action adds a new course';
+    try {
+      await this.CourseModal.create({
+        name: createCourseDto.name,
+        level: createCourseDto.level,
+        price: createCourseDto.price,
+        description: createCourseDto.description,
+      });
+      return 'This action adds a new course';
+    } catch (error) {
+      if (error.code === 11000 && error.keyPattern?.level) {
+        throw new ConflictException('Course level must be unique');
+      }
+      throw error;
+    }
   }
 
   findAll() {
