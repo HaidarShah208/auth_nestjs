@@ -5,13 +5,14 @@ import { UpdateCourseDto } from './dto/update-course.dto';
 import { AuthGuard } from 'src/modules/auth/guards/jwt.auth.guard';
 import { Roles } from 'src/modules/auth/decorators/roles.decorators';
 import { Role } from 'src/enums/role.enum';
+import { RolesGuard } from 'src/modules/auth/guards/roles.guard';
 
 @Controller('courses')
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
   @Post()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin)
   create(@Body() createCourseDto: CreateCourseDto) {
     return this.coursesService.create(createCourseDto);
